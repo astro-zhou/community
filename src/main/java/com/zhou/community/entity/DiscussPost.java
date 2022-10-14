@@ -30,7 +30,7 @@ public class DiscussPost {
         return userId;
     }
 
-    public void setUserid(int userid) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 

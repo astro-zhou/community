@@ -1,5 +1,6 @@
 package com.zhou.community.dao;
 
+import com.zhou.community.dao.AlphaDao;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Primary    //更高的优先级
-public class AlphaDaoMyBatisImpl implements AlphaDao{
+public class AlphaDaoMyBatisImpl implements AlphaDao {
     @Override
     public String select() {
         return "MyBatis";

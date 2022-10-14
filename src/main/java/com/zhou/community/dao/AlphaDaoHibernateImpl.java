@@ -1,5 +1,6 @@
 package com.zhou.community.dao;
 
+import com.zhou.community.dao.AlphaDao;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("alphaHibernate")
-public class AlphaDaoHibernateImpl implements AlphaDao{
+public class AlphaDaoHibernateImpl implements AlphaDao {
 
     @Override
     public String select() {
