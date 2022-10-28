@@ -6,7 +6,10 @@ import com.zhou.community.dao.UserMapper;
 import com.zhou.community.entity.DiscussPost;
 import com.zhou.community.entity.User;
 import com.zhou.community.util.CommunityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -18,6 +21,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -27,6 +31,8 @@ import java.util.Date;
 @Service
 //@Scope("prototype")   //非单例,不常用
 public class AlphaService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AlphaService.class);
 
     @Autowired
     private AlphaDao alphaDao;
@@ -116,5 +122,11 @@ public class AlphaService {
                 return "ok";
             }
         });
+    }
+
+    // 让该方法在多线程环境下,被异步的调用
+    @Async
+    public void execute1() {
+        logger.debug("execute1");
     }
 }
