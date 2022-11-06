@@ -1,238 +1,273 @@
 <!doctype html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!--	访问该页面时,在此处生成 CSRF 令牌-->
-<!--	<meta name="_csrf" th:content="${_csrf.token}">-->
-<!--	<meta name="_csrf_header" th:content="${_csrf.headerName}">-->
+    <!--	访问该页面时,在此处生成 CSRF 令牌-->
+    <!--	<meta name="_csrf" th:content="${_csrf.token}">-->
+    <!--	<meta name="_csrf_header" th:content="${_csrf.headerName}">-->
 
-	<link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
-	<link rel="stylesheet" th:href="@{/css/global.css}" />
-	<title>牛客网-首页</title>
+<!--    <link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>-->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/global.css}"/>
+
+
+    <title>跃迁-程序员技术交流平台-首页</title>
 </head>
-<body>	
-	<div class="nk-container">
-		<!-- 头部 -->
-		<header class="bg-dark sticky-top" th:fragment="header">
-			<div class="container">
-				<!-- 导航 -->
-				<nav class="navbar navbar-expand-lg navbar-dark">
-					<!-- logo -->
-					<a class="navbar-brand" href="#"></a>
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<!-- 功能 -->
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav mr-auto">
-							<li class="nav-item ml-3 btn-group-vertical">
-								<a class="nav-link" th:href="@{/index}">首页</a>
-							</li>
-							<li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser!=null}">
-								<a class="nav-link position-relative" th:href="@{/letter/list}">消息<span class="badge badge-danger" th:text="${allUnreadCount!=0?allUnreadCount:''}"></span></a>
-							</li>
-							<li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser==null}">
-								<a class="nav-link" th:href="@{/register}">注册</a>
-							</li>
-							<li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser==null}">
-								<a class="nav-link" th:href="@{/login}">登录</a>
-							</li>
-							<li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${loginUser!=null}">
-								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;"/>
-								</a>
-								<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<a class="dropdown-item text-center" th:href="@{|/user/profile/${loginUser.id}|}">个人主页</a>
-									<a class="dropdown-item text-center" th:href="@{/user/setting}">账号设置</a>
-									<a class="dropdown-item text-center" th:href="@{/logout}">退出登录</a>
-									<div class="dropdown-divider"></div>
-									<span class="dropdown-item text-center text-secondary" th:utext="${loginUser.username}">nowcoder</span>
-								</div>
-							</li>
-						</ul>
-						<!-- 搜索 -->
-						<form class="form-inline my-2 my-lg-0" method="get" th:action="@{/search}">
-							<input class="form-control mr-sm-2" type="search" aria-label="Search" name="keyword" th:value="${keyword}"/>
-							<button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
-						</form>
-					</div>
-				</nav>
-			</div>
-		</header>
+<body>
+<div class="nk-container">
 
-		<!-- 内容 -->
-		<div class="main">
-			<div class="container">
-				<div class="position-relative">
-					<!-- 筛选条件 -->
-					<ul class="nav nav-tabs mb-3">
-						<li class="nav-item">
-							<a th:class="|nav-link ${orderMode==0?'active':''}|" th:href="@{/index(orderMode=0)}">最新</a>
-						</li>
-						<li class="nav-item">
-							<a th:class="|nav-link ${orderMode==1?'active':''}|" th:href="@{/index(orderMode=1)}">最热</a>
-						</li>
-					</ul>
-					<button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal" data-target="#publishModal" th:if="${loginUser!=null}">我要发布</button>
-				</div>
-				<!-- 弹出框 -->
-				<div class="modal fade" id="publishModal" tabindex="-1" role="dialog" aria-labelledby="publishModalLabel" aria-hidden="true">
-					<div class="modal-dialog modal-lg" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="publishModalLabel">新帖发布</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<div class="modal-body">
-								<form>
-									<div class="form-group">
-										<label for="recipient-name" class="col-form-label">标题：</label>
-										<input type="text" class="form-control" id="recipient-name">
-									</div>
-									<div class="form-group">
-										<label for="message-text" class="col-form-label">正文：</label>
-										<textarea class="form-control" id="message-text" rows="15"></textarea>
-									</div>
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-								<button type="button" class="btn btn-primary" id="publishBtn">发布</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- 提示框 -->
-				<div class="modal fade" id="hintModal" tabindex="-1" role="dialog" aria-labelledby="hintModalLabel" aria-hidden="true">
-					<div class="modal-dialog modal-lg" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="hintModalLabel">提示</h5>
-							</div>
-							<div class="modal-body" id="hintBody">
-								发布完毕!
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<!-- 帖子列表 -->
-				<ul class="list-unstyled">
-					<li class="media pb-3 pt-3 mb-3 border-bottom" th:each="map:${discussPosts}">	<!--表示我要使用discussPosts集合,每次循环得到1个map对象-->
-						<a th:href="@{|/user/profile/${map.user.id}|}">
-							<img th:src="${map.user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
-						</a>
-						<div class="media-body">
-							<h6 class="mt-0 mb-3">
-								<a th:href="@{|/discuss/detail/${map.post.id}|}" th:utext="${map.post.title}">备战春招，面试刷题跟他复习，一个月全搞定！</a>
-								<span class="badge badge-secondary bg-primary" th:if="${map.post.type==1}">置顶</span>
-								<span class="badge badge-secondary bg-danger" th:if="${map.post.status==1}">精华</span>
-							</h6>
-							<div class="text-muted font-size-12">
-								<u class="mr-3" th:utext="${map.user.username}">寒江雪</u> 发布于 <b th:text="${#dates.format(map.post.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
-								<ul class="d-inline float-right">
-									<li class="d-inline ml-2">赞<span th:text="${map.likeCount}"></span> </li>
-									<li class="d-inline ml-2">|</li>
-									<li class="d-inline ml-2">回帖 <span th:text="${map.post.commentCount}"></span></li>
-								</ul>
-							</div>
-						</div>						
-					</li>
-				</ul>
-				<!-- 分页 -->
-				<nav class="mt-5" th:if="${page.rows>0}" th:fragment="pagination">
-					<ul class="pagination justify-content-center">
-						<li class="page-item">
-							<a class="page-link" th:href="@{${page.path}(current=1)}">首页</a>
-						</li>
-						<li th:class="|page-item ${page.current==1?'disabled':''}|">
-							<a class="page-link" th:href="@{${page.path}(current=${page.current-1})}">上一页</a></li>
-						<li th:class="|page-item ${i==page.current?'active':''}|" th:each="i:${#numbers.sequence(page.from,page.to)}">
-							<a class="page-link" th:href="@{${page.path}(current=${i})}" th:text="${i}">1</a>
-						</li>
-						<li th:class="|page-item ${page.current==page.total?'disabled':''}|">
-							<a class="page-link" th:href="@{${page.path}(current=${page.current+1})}">下一页</a>
-						</li>
-						<li class="page-item">
-							<a class="page-link" th:href="@{${page.path}(current=${page.total})}">末页</a>
-						</li>
-					</ul>
-				</nav>
-			</div>
-		</div>
+    <!-- 头部 -->
+    <header class="bg-dark sticky-top" th:fragment="header">
+        <div class="container">
+            <!-- 导航 -->
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <!-- logo -->
+                <!--					<a class="navbar-brand" href="#"></a>-->
+                <svg t="1667643327258" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                     p-id="1326" width="30" height="30">
+                    <path d="M189.78133333 320.85333333c87.38133333 0 158.37866667-70.99733333 158.37866667-158.37866666C348.16 73.27288853 277.16266667 2.2755552 189.78133333 2.2755552c-87.38133333 0-158.37866667 70.99733333-158.37866666 158.37866667-1.8204448 87.38133333 70.99733333 160.19911147 158.37866666 160.19911146zM197.06311147 366.3644448h-16.384c-92.84266667 0-169.30133333 76.45866667-169.30133334 169.30133333v424.1635552C11.37777813 994.41777813 40.50488853 1021.7244448 75.09333333 1021.7244448h229.376c34.5884448 0 61.89511147-27.30666667 61.89511147-61.89511147V535.66577813c0-94.66311147-74.63822187-169.30133333-169.30133333-169.30133333zM834.21866667 320.85333333c87.38133333 0 158.37866667-70.99733333 158.37866666-158.37866666 0-87.38133333-70.99733333-158.37866667-158.37866666-158.37866667C746.83733333 2.2755552 675.84 73.27288853 675.84 160.65422187s70.99733333 160.19911147 158.37866667 160.19911146zM843.32088853 366.3644448h-16.384c-92.84266667 0-169.30133333 76.45866667-169.30133333 169.30133333v424.1635552c0 34.5884448 27.30666667 61.89511147 61.89511147 61.89511147H948.90666667c34.5884448 0 61.89511147-27.30666667 61.89511146-61.89511147V535.66577813c1.8204448-94.66311147-74.63822187-169.30133333-167.4808896-169.30133333z"
+                          fill="#1296db" p-id="1327">
+                    </path>
+                    <path d="M501.07733333 790.528c-9.10222187 0-18.2044448-3.64088853-23.66577813-9.10222187l-162.0195552-147.456c-14.5635552-12.74311147-16.384-36.40888853-1.8204448-50.9724448 12.74311147-14.5635552 36.40888853-16.384 50.9724448-1.8204448l138.35377813 125.61066667 156.55822187-127.4311104c16.384-12.74311147 38.22933333-10.92266667 50.9724448 5.46133333 12.74311147 16.384 10.92266667 38.22933333-5.46133333 50.97244374l-180.224 147.456c-7.28177813 3.64088853-14.5635552 7.28177813-23.66577814 7.28177813z"
+                          fill="#f4ea2a" p-id="1328"></path>
+                </svg>
 
-		<!-- 尾部 -->
-		<footer class="bg-dark">
-			<div class="container">
-				<div class="row">
-					<!-- 二维码 -->
-					<div class="col-4 qrcode">
-						<img src="https://uploadfiles.nowcoder.com/app/app_download.png" class="img-thumbnail" style="width:136px;" />
-					</div>
-					<!-- 公司信息 -->
-					<div class="col-8 detail-info">
-						<div class="row">
-							<div class="col">
-								<ul class="nav">
-									<li class="nav-item">
-										<a class="nav-link text-light" href="#">关于我们</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link text-light" href="#">加入我们</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link text-light" href="#">意见反馈</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link text-light" href="#">企业服务</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link text-light" href="#">联系我们</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link text-light" href="#">免责声明</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link text-light" href="#">友情链接</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<ul class="nav btn-group-vertical company-info">
-									<li class="nav-item text-white-50">
-										公司地址：北京市朝阳区大屯路东金泉时代3-2708北京牛客科技有限公司
-									</li>
-									<li class="nav-item text-white-50">
-										联系方式：010-60728802(电话)&nbsp;&nbsp;&nbsp;&nbsp;admin@nowcoder.com
-									</li>
-									<li class="nav-item text-white-50">
-										牛客科技©2018 All rights reserved
-									</li>
-									<li class="nav-item text-white-50">
-										京ICP备14055008号-4 &nbsp;&nbsp;&nbsp;&nbsp;
-										<img src="http://static.nowcoder.com/company/images/res/ghs.png" style="width:18px;" />
-										京公网安备 11010502036488号
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-	</div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- 功能 -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item ml-3 btn-group-vertical">
+                            <a class="nav-link" th:href="@{/index}">跃迁-程序员交流平台</a>
+                        </li>
+                        <li class="nav-item ml-3 btn-group-vertical">
+                            <a class="nav-link" th:href="@{/index}">首页</a>
+                        </li>
+                        <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser!=null}">
+                            <a class="nav-link position-relative" th:href="@{/letter/list}">消息<span
+                                    class="badge badge-danger" th:text="${allUnreadCount!=0?allUnreadCount:''}"></span></a>
+                        </li>
+                        <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser==null}">
+                            <a class="nav-link" th:href="@{/register}">注册</a>
+                        </li>
+                        <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser==null}">
+                            <a class="nav-link" th:href="@{/login}">登录</a>
+                        </li>
+                        <li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${loginUser!=null}">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;"/>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-center"
+                                   th:href="@{|/user/profile/${loginUser.id}|}">个人主页</a>
+                                <a class="dropdown-item text-center" th:href="@{/user/setting}">账号设置</a>
+                                <a class="dropdown-item text-center" th:href="@{/logout}">退出登录</a>
+                                <div class="dropdown-divider"></div>
+                                <span class="dropdown-item text-center text-secondary" th:utext="${loginUser.username}">nowcoder</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- 搜索 -->
+                    <form class="form-inline my-2 my-lg-0" method="get" th:action="@{/search}">
+                        <input class="form-control mr-sm-2" type="search" aria-label="Search" name="keyword"
+                               th:value="${keyword}"/>
+                        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
 
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
-	<script th:src="@{/js/global.js}"></script>
-	<script th:src="@{js/index.js}"></script>
+    <!-- 内容 -->
+    <div class="main">
+        <div class="container">
+            <div class="position-relative">
+                <!-- 筛选条件 -->
+                <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item">
+                        <a th:class="|nav-link ${orderMode==0?'active':''}|" th:href="@{/index(orderMode=0)}">最新</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:class="|nav-link ${orderMode==1?'active':''}|" th:href="@{/index(orderMode=1)}">最热</a>
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal"
+                        data-target="#publishModal" th:if="${loginUser!=null}">我要发布
+                </button>
+            </div>
+            <!-- 弹出框 -->
+            <div class="modal fade" id="publishModal" tabindex="-1" role="dialog" aria-labelledby="publishModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="publishModalLabel">新帖发布</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">标题：</label>
+                                    <input type="text" class="form-control" id="recipient-name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">正文：</label>
+                                    <textarea class="form-control" id="message-text" rows="15"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="publishBtn">发布</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 提示框 -->
+            <div class="modal fade" id="hintModal" tabindex="-1" role="dialog" aria-labelledby="hintModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="hintModalLabel">提示</h5>
+                        </div>
+                        <div class="modal-body" id="hintBody">
+                            发布完毕!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 帖子列表 -->
+            <ul class="list-unstyled">
+                <li class="media pb-3 pt-3 mb-3 border-bottom" th:each="map:${discussPosts}">
+                    <!--表示我要使用discussPosts集合,每次循环得到1个map对象-->
+                    <a th:href="@{|/user/profile/${map.user.id}|}">
+                        <img th:src="${map.user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像"
+                             style="width:50px;height:50px;">
+                    </a>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-3">
+                            <a th:href="@{|/discuss/detail/${map.post.id}|}" th:utext="${map.post.title}">备战春招，面试刷题跟他复习，一个月全搞定！</a>
+                            <span class="badge badge-secondary bg-primary" th:if="${map.post.type==1}">置顶</span>
+                            <span class="badge badge-secondary bg-danger" th:if="${map.post.status==1}">精华</span>
+                        </h6>
+                        <div class="text-muted font-size-12">
+                            <u class="mr-3" th:utext="${map.user.username}">寒江雪</u> 发布于 <b
+                                th:text="${#dates.format(map.post.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15
+                            15:32:18</b>
+                            <ul class="d-inline float-right">
+                                <li class="d-inline ml-2">赞<span th:text="${map.likeCount}"></span></li>
+                                <li class="d-inline ml-2">|</li>
+                                <li class="d-inline ml-2">回帖 <span th:text="${map.post.commentCount}"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <!-- 分页 -->
+            <nav class="mt-5" th:if="${page.rows>0}" th:fragment="pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" th:href="@{${page.path}(current=1)}">首页</a>
+                    </li>
+                    <li th:class="|page-item ${page.current==1?'disabled':''}|">
+                        <a class="page-link" th:href="@{${page.path}(current=${page.current-1})}">上一页</a></li>
+                    <li th:class="|page-item ${i==page.current?'active':''}|"
+                        th:each="i:${#numbers.sequence(page.from,page.to)}">
+                        <a class="page-link" th:href="@{${page.path}(current=${i})}" th:text="${i}">1</a>
+                    </li>
+                    <li th:class="|page-item ${page.current==page.total?'disabled':''}|">
+                        <a class="page-link" th:href="@{${page.path}(current=${page.current+1})}">下一页</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" th:href="@{${page.path}(current=${page.total})}">末页</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 尾部 -->
+    <footer class="bg-dark">
+        <div class="container">
+            <div class="row">
+                <!-- 二维码 -->
+                <div class="col-4 qrcode">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAIAAAAP3aGbAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAIu0lEQVR4nO3dQZLbOhJAQWvC97+y5wYN/agGgSdl7i2BFPsFFizj9e/fvz8ABf87vQCAdwkWkCFYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZAgWkCFYQIZgARmCBWQIFpAhWECGYAEZf4f//vV6/co6brY8p2N4E+bngOz+FXbfgflXPLDCoftX+ID5o26HBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZAgWkDEdzVmav4y/2wNjJUPLFd4/17L7K3bfonfsfgy+4U9pyQ4LyBAsIEOwgAzBAjIEC8gQLCBDsIAMwQIyBAvIECwgY/toztLxE1/uN78EN+EBw/mn3QuYu+EnsMMCMgQLyBAsIEOwgAzBAjIEC8gQLCBDsIAMwQIyBAvIOD+a8wGGIxGGNt5xfPDlgXN3WLLDAjIEC8gQLCBDsIAMwQIyBAvIECwgQ7CADMECMrzp/gt2v2Z9/D31+9/hvn+F/Ao7LCBDsIAMwQIyBAvIECwgQ7CADMECMgQLyBAsIEOwgIzzozkPHB/w8Xbfw/nszvITjo83fcB80jf8KdlhARmCBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZGwfzbl/oGHu52t8YK5l+AnzBcwdv4T7Z3e+4U9pyQ4LyBAsIEOwgAzBAjIEC8gQLCBDsIAMwQIyBAvIECwg4/UNJ22cNZ+oOD6as3R88OX+4SF+hR0WkCFYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQIVhAxvnRnONjJUsfMDVy3O6b8MB00dANkz27H9QHrtEOC8gQLCBDsIAMwQIyBAvIECwgQ7CADMECMgQLyJi+6f7Au627X+OeH6Aw/Pyl4y9JH1/Acg3HFzBfw/GbfMPQyJIdFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZAgWkCFYQMb2QyjmAwfHT1j4gEMo7v+Vdy9g6fhpLHPH/1KWjOYAX0SwgAzBAjIEC8gQLCBDsIAMwQIyBAvIECwgQ7CAjL+7v+D45M3xkYsbBiaOH/xz3Aec3jT/hN0zZA886nZYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGdNTc26YO9lt9y2aTy/tnsm44eij4+NBxx/1B36m4ecvOTUH+CKCBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZGw/NWfp/rGSpeHIwvHBlxuGh5aOH/yzezbo+OjP8QW8ww4LyBAsIEOwgAzBAjIEC8gQLCBDsIAMwQIyBAvImB5Csf6CwuuzP7v/Fj1wBsTuBdx/CUv3j2QMOYQC4D8QLCBDsIAMwQIyBAvIECwgQ7CADMECMgQLyBAsIGP7aM56BbOJhBsGGo5Pjey+h0vH504emAA7/peydPwxWDKaA3wRwQIyBAvIECwgQ7CADMECMgQLyBAsIEOwgAzBAjL+nl7A+YmH+wdr5oZfMf+Ndp9J8w2OT6Hd8CTbYQEZggVkCBaQIVhAhmABGYIFZAgWkCFYQIZgARmCBWRsPzVnPk9wfHRmaffgy+5TbY7PfLyzhp8dP7Zn6RtGix54TuywgAzBAjIEC8gQLCBDsIAMwQIyBAvIECwgQ7CADMECMqan5jwwcDAcK1naPfjygOMLOD74Mrf7Eo4PYC09MEU3fwzssIAMwQIyBAvIECwgQ7CADMECMgQLyBAsIEOwgAzBAjKmoznzt/WPT3XsnpmYX+DuFR4/uIg/j5ze9PNX3DB5s2SHBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZLx2v5z6wP9sv/vz738R/Pg9XNp9i254S/vnr/iAFQ4//1e+wg4LyBAsIEOwgAzBAjIEC8gQLCBDsIAMwQIyBAvIECwgY3oIxdLuiYQHDrk4PlZy3A2nDwwfgw+YLtrt+ITZO+ywgAzBAjIEC8gQLCBDsIAMwQIyBAvIECwgQ7CADMECMqajOfORiOFkzA1HfeyeaTg+MzG/yfdPxhx3/3N4AzssIEOwgAzBAjIEC8gQLCBDsIAMwQIyBAvIECwgQ7CAjOlozv3jAh8w8XD/Co8v4AHDX+GBc32+4dwdOywgQ7CADMECMgQLyBAsIEOwgAzBAjIEC8gQLCBDsICM1/B1/gcGX3avcO7nFc4XsHvk4obBmvvHjz7e8T/Vd9hhARmCBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGdM33fmzegN4fod3vyt/wxvMw2u84S3t3Y/BcAFLDwwbzG+CHRaQIVhAhmABGYIFZAgWkCFYQIZgARmCBWQIFpAhWEDG3+G//4ajAZbzBLunLu4/oOH+Bdwwu3N8AbtPS3mAHRaQIVhAhmABGYIFZAgWkCFYQIZgARmCBWQIFpAhWEDGdDRn6f5TeeYTCcPjUh4YiTi+wuOTMbt/5bnjfyk3HO+0ZIcFZAgWkCFYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQsX00Z+njJx6OH8cyd//QxgOn5gzdfybNAwNYc3ZYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGedHcz7A7gNddk883DA1MrzG45M376xht+U1Dg9PuoEdFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZAgWkOFN919ww5viP/uAV5zrPuCYjPkK50+aHRaQIVhAhmABGYIFZAgWkCFYQIZgARmCBWQIFpAhWEDG+dGcD5gLqR8SMf/8+R0YTnXcMB11fP5pODpzw+TNkh0WkCFYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQIVhAxmv4Nv0NIxG73T95s3smY+mBx2A4mpO4xo/n1BzgiwgWkCFYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQMR3NAXiMHRaQIVhAhmABGYIFZAgWkCFYQIZgARmCBWQIFpAhWECGYAEZggVkCBaQIVhAhmABGYIFZAgWkCFYQIZgARmCBWQIFpDxfxI77jdOWUnnAAAAAElFTkSuQmCC" class="img-thumbnail"
+                         style="width:136px;"/>
+                </div>
+                <!-- 信息 -->
+                <div class="col-8 detail-info">
+                    <div class="row">
+                        <div class="col">
+                            <ul class="nav">
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#">关于我们</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#">加入我们</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#">意见反馈</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#">企业服务</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#">联系我们</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#">免责声明</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#">友情链接</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <ul class="nav btn-group-vertical company-info">
+                                <li class="nav-item text-white-50">
+                                    公司地址：北京市朝阳区翻斗大街翻斗花园2号楼1001室
+                                </li>
+                                <li class="nav-item text-white-50">
+                                    联系方式：010-66668888(电话)&nbsp;&nbsp;&nbsp;&nbsp;admin@learn.com
+                                </li>
+                                <li class="nav-item text-white-50">
+                                    跃迁-程序员交流平台©2022 All rights reserved
+                                </li>
+                                <li class="nav-item text-white-50">
+                                    京ICP备00001111号-4 &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <img src="http://static.nowcoder.com/company/images/res/ghs.png"
+                                         style="width:18px;"/>
+                                    京公网安备 00001111号
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script th:src="@{/js/global.js}"></script>
+<script th:src="@{js/index.js}"></script>
 </body>
 </html>
