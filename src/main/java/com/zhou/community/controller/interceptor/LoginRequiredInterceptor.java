@@ -1,6 +1,6 @@
 package com.zhou.community.controller.interceptor;
 
-import annotation.LoginRequired;
+import com.zhou.community.annotation.LoginRequired;
 import com.zhou.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

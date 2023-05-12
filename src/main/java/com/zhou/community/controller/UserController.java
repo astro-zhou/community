@@ -1,6 +1,6 @@
 package com.zhou.community.controller;
 
-import annotation.LoginRequired;
+import com.zhou.community.annotation.LoginRequired;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 import com.zhou.community.entity.User;
