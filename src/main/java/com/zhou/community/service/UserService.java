@@ -49,12 +49,12 @@ public class UserService implements CommunityConstant {
 
 
     public User findUserById(int id) {
-//        return userMapper.selectById(id);
-        User user = getCache(id);
+        return userMapper.selectById(id);
+       /* User user = getCache(id);
         if (user == null) {
             user = initCache(id);
         }
-        return user;
+        return user;*/
     }
 
     public Map<String, Object> register(User user) {
